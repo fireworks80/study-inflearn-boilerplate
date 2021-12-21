@@ -40,6 +40,7 @@ const userSchema = mongoose.Schema({
 userSchema.pre('save', function (next) {
 	const user = this;
 
+	// 비밀번호를 바꾸는 것이 아니면 그냥 넘어간다.
 	if (!user.isModified('password')) return next();
 
 	// saltRountd를 이용해서 salt 생성
