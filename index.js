@@ -4,21 +4,22 @@ const app = express();
 const port = process.env.PORT || 4000;
 const bodyParser = require('body-parser');
 const User = require('./models/User');
-
-// application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: true}));
+console.log(process.env.NODE_ENV);
+const dbHost = process.env.NODE_ENV === 'development' ? process.env.DB_HOST : process.env.MONGO_URI;
+	// application/x-www-form-urlencoded
+	app.use(bodyParser.urlencoded({extended: true}));
 
 // application/json
 app.use(bodyParser.json());
 
 const mongoose = require('mongoose');
-mongoose.connect(process.env.DB_HOST).then(() => {
+mongoose.connect(dbHost).then(() => {
 	console.log('Connected Mongodb...');
 }).catch(error => {
 	console.error(error);
 });
 
-app.get('/', (req, res) => res.send('hello world'));
+app.get('/', (req, res) => res.send('hello world1'));
 
 
 app.post('/register', (req, res) => {
