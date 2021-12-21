@@ -4,10 +4,10 @@ const app = express();
 const port = process.env.PORT || 4000;
 const bodyParser = require('body-parser');
 const User = require('./models/User');
-console.log(process.env.NODE_ENV);
 const dbHost = process.env.NODE_ENV === 'development' ? process.env.DB_HOST : process.env.MONGO_URI;
-	// application/x-www-form-urlencoded
-	app.use(bodyParser.urlencoded({extended: true}));
+
+// application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: true}));
 
 // application/json
 app.use(bodyParser.json());
