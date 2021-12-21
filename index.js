@@ -39,6 +39,15 @@ app.post('/register', (req, res) => {
 });
 
 
+// login
+app.post('/login', (req, res) => {
+	// 사용자의 로그인 정보를 가져온다.
+	// db에서 사용자의 email이 맞는지 검색한다.
+	// 로그인 정보가 맞으면 index로 이동
+	// 정보가 틀리면 alert 노출
+});
+
+
 app.listen(port, () => {
 	console.log(`listen ${port}`);
 });
