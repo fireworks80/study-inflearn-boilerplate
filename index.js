@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 4000;
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const User = require('./models/User');
 const dbHost = process.env.NODE_ENV === 'development' ? process.env.DB_HOST : process.env.MONGO_URI;
 
@@ -11,6 +12,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // application/json
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 const mongoose = require('mongoose');
 mongoose.connect(dbHost).then(() => {
@@ -54,7 +56,10 @@ app.post('/login', (req, res) => {
 
 			// 비밀번호가 맞으면 토큰 생성
 			user.generateToken((err, user) => {
+				if (err) return res.status(400).send(err);
 
+				// 토큰을 저장한다 where: cookie, localStorage
+				res.cookie('x_auth', user.token).status(200).json({ loginSuccess: true, userId: user._id });
 			}); // generateToken()
 		});
 	});
