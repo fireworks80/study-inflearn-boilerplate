@@ -5,6 +5,7 @@ const port = process.env.PORT || 4000;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const User = require('./models/User');
+const auth = require('./middleware/auth');
 const dbHost = process.env.NODE_ENV === 'development' ? process.env.DB_HOST : process.env.MONGO_URI;
 
 // application/x-www-form-urlencoded
@@ -24,7 +25,7 @@ mongoose.connect(dbHost).then(() => {
 app.get('/', (req, res) => res.send('hello world1'));
 
 
-app.post('/register', (req, res) => {
+app.post('/api/user/register', (req, res) => {
 	// 회원가입 할때 필요한 정보들을 client에서 가져온다
 	// 정보들을 데이터 베이스에 넣어 준다.
 
@@ -42,7 +43,7 @@ app.post('/register', (req, res) => {
 
 
 // login
-app.post('/login', (req, res) => {
+app.post('/api/user/login', (req, res) => {
 	// 사용자의 로그인 정보를 가져온다.
 	const {email, password} = req.body;
 
@@ -59,14 +60,26 @@ app.post('/login', (req, res) => {
 				if (err) return res.status(400).send(err);
 
 				// 토큰을 저장한다 where: cookie, localStorage
-				res.cookie('x_auth', user.token).status(200).json({ loginSuccess: true, userId: user._id });
+				res.cookie('x_auth', user.token).status(200).json({loginSuccess: true, userId: user._id});
 			}); // generateToken()
 		});
 	});
+});
 
-	// 로그인 정보가 맞으면 token을 생성하기
-
-	// 정보가 틀리면 alert 노출
+// auth router 만들기
+// middlewar : endpoint에 request하기 전에 중간에서 어떠한 것을 하는 것
+app.get('/api/user/auth', auth, (req, res) => {
+	const {_id, role, email, name, lastname, image} = req.user;
+	// middleware가 성공 (auth 완료)
+	res.status(200).json({
+		_id,
+		isAdmin: !!role,
+		email,
+		name,
+		lastname,
+		role,
+		image
+	});
 });
 
 
