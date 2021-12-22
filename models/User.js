@@ -81,16 +81,17 @@ userSchema.methods.generateToken = function (cb) {
 	});
 };
 
-userSchema.methods.findByToken = function (token, cb) {
+userSchema.statics.findByToken = function (token, cb) {
 	const user = this;
 
 	// token을 decode한다.
 	jwt.verify(token, tokenKey, (err, decoded) => {
-		console.log(decoded);
+		// console.log(decoded);
 		// decode한 token을 user의 토큰과 비교한다
 		user.findOne({"_id": decoded, "token": token}, (err, user) => {
-		// 비교후 cb로 던쳐준다.
+			// 비교후 cb로 던쳐준다.
 			if (err) return cb(err);
+			console.log(user);
 			cb(null, user);
 		});
 	});

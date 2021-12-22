@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const User = require('./models/User');
 const auth = require('./middleware/auth');
-const dbHost = process.env.NODE_ENV === 'development' ? process.env.DB_HOST : process.env.MONGO_URI;
+// const dbHost = process.env.NODE_ENV === 'development' ? process.env.DB_HOST : process.env.MONGO_URI;
+const dbHost = process.env.DB_HOST;
 
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
@@ -24,8 +25,7 @@ mongoose.connect(dbHost).then(() => {
 
 app.get('/', (req, res) => res.send('hello world1'));
 
-
-app.post('/api/user/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
 	// 회원가입 할때 필요한 정보들을 client에서 가져온다
 	// 정보들을 데이터 베이스에 넣어 준다.
 
@@ -41,9 +41,8 @@ app.post('/api/user/register', (req, res) => {
 	});
 });
 
-
 // login
-app.post('/api/user/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
 	// 사용자의 로그인 정보를 가져온다.
 	const {email, password} = req.body;
 
@@ -66,9 +65,21 @@ app.post('/api/user/login', (req, res) => {
 	});
 });
 
+// logout
+app.get('/api/users/logout', auth, (req, res) => {
+	// 로그아웃 하려는 User를 db에서 찾는다.
+	// 해당 유저의 token을 삭제한다.
+	User.findOneAndUpdate({_id: req.user._id}, {token: null}, (err, user) => {
+		if (err) return res.json({success: false, mesage: err});
+
+		res.status(200).send({success: true});
+	});
+});
+
 // auth router 만들기
 // middlewar : endpoint에 request하기 전에 중간에서 어떠한 것을 하는 것
-app.get('/api/user/auth', auth, (req, res) => {
+app.get('/api/users/auth', auth, (req, res) => {
+
 	const {_id, role, email, name, lastname, image} = req.user;
 	// middleware가 성공 (auth 완료)
 	res.status(200).json({
