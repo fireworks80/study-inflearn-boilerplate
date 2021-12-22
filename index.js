@@ -42,8 +42,25 @@ app.post('/register', (req, res) => {
 // login
 app.post('/login', (req, res) => {
 	// 사용자의 로그인 정보를 가져온다.
+	const {email, password} = req.body;
+
 	// db에서 사용자의 email이 맞는지 검색한다.
-	// 로그인 정보가 맞으면 index로 이동
+	User.findOne({email}, (err, user) => {
+		if (err) return res.json({loginSuccess: false, message: '해당 유저가 없음', err});
+
+		// email이 맞으면 비밀번호가 맞는지 확인 한다.
+		user.comparePassword(password, (err, isMatch) => {
+			if (!isMatch) return res.json({loginSucess: false, message: '비밀번호가 틀렸습니다.'});
+
+			// 비밀번호가 맞으면 토큰 생성
+			user.generateToken((err, user) => {
+
+			}); // generateToken()
+		});
+	});
+
+	// 로그인 정보가 맞으면 token을 생성하기
+
 	// 정보가 틀리면 alert 노출
 });
 
