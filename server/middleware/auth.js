@@ -19,10 +19,6 @@ const auth = (req, res, next) => {
 		req.user = user;
 		next(); // middleware에서 다음 진행을 하기 위해
 	});
-
-	// 유저를 찾는다
-	// 유져가 있으면 ok
-	// 유저가 없으면 no
 };
 
 module.exports = auth;
