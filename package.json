@@ -2,11 +2,11 @@
   "name": "inflearn-boilerplate",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "backend": "export NODE_ENV=production; nodemon index.js"
+    "start": "node server/index.js",
+    "backend": "export NODE_ENV=production; nodemon ./server/index.js"
   },
   "author": "",
   "license": "ISC",
